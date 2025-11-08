@@ -3,15 +3,7 @@
 A web-based translation tool that uses Google Cloud Translation API for both text-to-text and document-to-document translation.
 
 ## Screenshots
-
-### Main Interface
-![Main Interface](images/screenshot-main.png)
-
-### Text Translation
-![Text Translation](images/screenshot-text.png)
-
-### Document Translation
-![Document Translation](images/screenshot-document.png)
+![Alt text](Screenshot-main.png)
 
 ## Features
 
