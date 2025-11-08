@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Translation Service</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- PDF.js for PDF parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- Mammoth.js for DOCX parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <!-- FileSaver.js for file downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <!-- html-docx-js-typescript for DOCX generation -->
+    <script src="https://unpkg.com/html-docx-js-typescript@latest/dist/html-docx.umd.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Indian Languages Translation Service</h1>
+            <p>Translate text and documents across Indian languages using Google Cloud Translation API</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('text')">Text Translation</button>
+            <button class="tab-button" onclick="showTab('document')">Document Translation</button>
+        </div>
+
+        <!-- Text Translation Section -->
+        <div id="text-tab" class="tab-content active">
+            <div class="translation-panel">
+                <div class="language-selector">
+                    <div class="lang-group">
+                        <label for="source-lang">Source Language</label>
+                        <select id="source-lang">
+                            <option value="auto">Auto Detect</option>
+                            <option value="hi">Hindi</option>
+                            <option value="bn">Bengali</option>
+                            <option value="te">Telugu</option>
+                            <option value="mr">Marathi</option>
+                            <option value="ta">Tamil</option>
+                            <option value="gu">Gujarati</option>
+                            <option value="kn">Kannada</option>
+                            <option value="ml">Malayalam</option>
+                            <option value="pa">Punjabi</option>
+                            <option value="ur">Urdu</option>
+                            <option value="en">English</option>
+                        </select>
+                    </div>
+                    <div class="lang-group">
+                        <label for="target-lang">Target Language</label>
+                        <select id="target-lang">
+                            <option value="hi">Hindi</option>
+                            <option value="bn">Bengali</option>
+                            <option value="te">Telugu</option>
+                            <option value="mr">Marathi</option>
+                            <option value="ta">Tamil</option>
+                            <option value="gu">Gujarati</option>
+                            <option value="kn">Kannada</option>
+                            <option value="ml">Malayalam</option>
+                            <option value="pa">Punjabi</option>
+                            <option value="ur">Urdu</option>
+                            <option value="en">English</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="text-areas">
+                    <div class="text-group">
+                        <label for="source-text">Source Text</label>
+                        <textarea id="source-text" placeholder="Enter text to translate..." rows="10"></textarea>
+                        <div class="char-count">
+                            <span id="char-count">0</span> characters
+                        </div>
+                    </div>
+                    <div class="text-group">
+                        <label for="translated-text">Translated Text (Click words for synonyms)</label>
+                        <div class="editable-content-wrapper">
+                            <div id="translated-text-editable" class="editable-content" contenteditable="false">
+                                <span style="color: #999;">Translation will appear here...</span>
+                            </div>
+                            <textarea id="translated-text" style="display: none;" placeholder="Translation will appear here..." rows="10" readonly></textarea>
+                        </div>
+                        <button id="copy-btn" class="copy-btn" onclick="copyTranslation()">Copy Translation</button>
+                    </div>
+                </div>
+
+                <button id="translate-text-btn" class="translate-btn" onclick="translateText()">Translate Text</button>
+                <div id="text-status" class="status-message"></div>
+            </div>
+        </div>
+
+        <!-- Document Translation Section -->
+        <div id="document-tab" class="tab-content">
+            <div class="translation-panel">
+                <div class="language-selector">
+                    <div class="lang-group">
+                        <label for="doc-source-lang">Source Language</label>
+                        <select id="doc-source-lang">
+                            <option value="auto">Auto Detect</option>
+                            <option value="hi">Hindi</option>
+                            <option value="bn">Bengali</option>
+                            <option value="te">Telugu</option>
+                            <option value="mr">Marathi</option>
+                            <option value="ta">Tamil</option>
+                            <option value="gu">Gujarati</option>
+                            <option value="kn">Kannada</option>
+                            <option value="ml">Malayalam</option>
+                            <option value="pa">Punjabi</option>
+                            <option value="ur">Urdu</option>
+                            <option value="en">English</option>
+                        </select>
+                    </div>
+                    <div class="lang-group">
+                        <label for="doc-target-lang">Target Language</label>
+                        <select id="doc-target-lang">
+                            <option value="hi">Hindi</option>
+                            <option value="bn">Bengali</option>
+                            <option value="te">Telugu</option>
+                            <option value="mr">Marathi</option>
+                            <option value="ta">Tamil</option>
+                            <option value="gu">Gujarati</option>
+                            <option value="kn">Kannada</option>
+                            <option value="ml">Malayalam</option>
+                            <option value="pa">Punjabi</option>
+                            <option value="ur">Urdu</option>
+                            <option value="en">English</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="file-upload">
+                    <div class="upload-area" id="upload-area">
+                        <input type="file" id="file-input" accept=".txt,.pdf,.docx" onchange="handleFileSelect(event)">
+                        <label for="file-input" class="upload-label">
+                            <div class="upload-icon">📄</div>
+                            <div class="upload-text">
+                                <strong>Choose a document</strong> or drag it here
+                            </div>
+                            <div class="upload-info">
+                                Supported formats: TXT, PDF, DOCX (Max 10MB)<br>
+                                <small>Layout and formatting will be preserved</small>
+                            </div>
+                        </label>
+                    </div>
+                    <div id="file-info" class="file-info"></div>
+                </div>
+
+                <button id="translate-doc-btn" class="translate-btn" onclick="translateDocument()">Translate Document</button>
+                <div id="doc-status" class="status-message"></div>
+                <div id="download-section" class="download-section"></div>
+            </div>
+        </div>
+
+        <!-- API Configuration Section -->
+        <div class="config-section">
+            <h3>API Configuration</h3>
+            <div class="config-group">
+                <label for="api-key">Google Cloud API Key</label>
+                <input type="password" id="api-key" placeholder="Enter your API key">
+                <button onclick="saveApiKey()" class="save-btn">Save Key</button>
+            </div>
+            <div class="config-info">
+                <p><strong>Note:</strong> Your API key is stored locally in your browser and never sent to any third party.</p>
+                <p>Get your API key from <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Synonym Suggestion Popup -->
+    <div id="synonym-popup" class="synonym-popup">
+        <div class="synonym-popup-header">
+            <span class="synonym-popup-title">Synonyms</span>
+            <button class="synonym-close-btn" onclick="closeSynonymPopup()">&times;</button>
+        </div>
+        <div class="synonym-original-word">
+            Original: <strong id="synonym-original"></strong>
+        </div>
+        <div id="synonym-content" class="synonym-list">
+            <!-- Synonyms will be loaded here -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+# API Keys and Secrets
+.env
+.env.local
+config.js
+secrets.js
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temporary Files
+*.tmp
+*.temp
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Node modules (if you add npm in future)
+node_modules/
+
+# Build outputs
+dist/
+build/
